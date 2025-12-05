@@ -149,7 +149,7 @@ streamlit run app/chatbot.py
 
 ## 👤 Author
 
-**Rabbi Islam Yeasin ** | IBM Certified Professional Data Scientist  
+**Rabbi Islam Yeasin** | IBM Certified Professional Data Scientist  
 📧 [official.rabbiyeasin@gmail.com]  
 💼 [LinkedIn](https://www.linkedin.com/in/rabbiyeasin/)  
 📊 [Portfolio](rabbi.yeasin-arena.com)
