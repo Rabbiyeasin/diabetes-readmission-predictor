@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Readmission ML - Project Brief</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .hero-stat {
+            background: #ff6b6b;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-left: 6px solid #c92a2a;
+        }
+        
+        .hero-stat .big-number {
+            font-size: 4em;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        
+        .hero-stat .explanation {
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .section p {
+            color: #333;
+            font-size: 1.05em;
+            margin-bottom: 12px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #1e3c72;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .label {
+            font-size: 0.95em;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .before, .after {
+            padding: 25px;
+            border-radius: 12px;
+        }
+        
+        .before {
+            background: #ffe0e0;
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .after {
+            background: #d3f9d8;
+            border-left: 5px solid #51cf66;
+        }
+        
+        .before h3, .after h3 {
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+        
+        .before h3 {
+            color: #c92a2a;
+        }
+        
+        .after h3 {
+            color: #2b8a3e;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tech-badge {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px;
+            text-align: center;
+            margin-top: 30px;
+            border-radius: 12px;
+        }
+        
+        .cta h2 {
+            color: white;
+            border: none;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            color: white;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .highlight {
+            background: #fff3bf;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .hero-stat .big-number {
+                font-size: 3em;
+            }
+            
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Hospital Readmission Prediction</h1>
+            <p class="subtitle">Enterprise ML That Saves Lives and Money</p>
+        </div>
+        
+        <div class="hero-stat">
+            <div class="big-number">88.6%</div>
+            <div class="explanation">Class imbalance — the #1 reason 90% of junior models fail on this dataset. This project solves it.</div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>🎯 The Business Problem</h2>
+                <p>Hospital readmissions within 30 days cost the US healthcare system <span class="highlight">$26 billion annually</span>. Medicare penalizes hospitals up to <span class="highlight">3% of total reimbursements</span> for excessive readmissions.</p>
+                <p>This isn't a Kaggle competition. This is a business survival problem.</p>
+            </div>
+            
+            <div class="section">
+                <h2>📊 The Data Challenge</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number">101K</div>
+                        <div class="label">Patient Encounters</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">11.37%</div>
+                        <div class="label">Positive Cases</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">130</div>
+                        <div class="label">US Hospitals</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">50+</div>
+                        <div class="label">Clinical Features</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>⚡ The Breakthrough (Day 2)</h2>
+                <p>Identified and documented the <span class="highlight">88.6% accuracy trap</span> that kills most healthcare ML projects:</p>
+                
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Naive Approach</h3>
+                        <p><strong>Model:</strong> Predict "NO readmission" for every patient</p>
+                        <p><strong>Accuracy:</strong> 88.6%</p>
+                        <p><strong>Clinical Value:</strong> Zero</p>
+                        <p><strong>High-Risk Patients Caught:</strong> 0 out of 11,469</p>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ Our Solution</h3>
+                        <p><strong>Strategy:</strong> SMOTE + Class Weights + PR-AUC</p>
+                        <p><strong>Target Metric:</strong> 0.87 AUC</p>
+                        <p><strong>Clinical Value:</strong> High</p>
+                        <p><strong>Focus:</strong> Cost-sensitive learning aligned with Medicare penalties</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🛠️ Technical Approach</h2>
+                <p><strong>Day 1:</strong> Foundation & EDA on 101K records</p>
+                <p><strong>Day 2:</strong> Target engineering + class imbalance war room (COMPLETE)</p>
+                <p><strong>Day 3:</strong> Feature engineering (admission frequency, polypharmacy, diagnosis clustering)</p>
+                <p><strong>Day 4:</strong> Model selection (XGBoost, LightGBM, ensemble stacking)</p>
+                <p><strong>Day 5:</strong> Deployment readiness (SHAP explainability, API design, dashboard)</p>
+                
+                <div class="tech-stack">
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">Scikit-learn</span>
+                    <span class="tech-badge">SMOTE</span>
+                    <span class="tech-badge">XGBoost</span>
+                    <span class="tech-badge">SHAP</span>
+                    <span class="tech-badge">Pandas</span>
+                    <span class="tech-badge">Matplotlib</span>
+                    <span class="tech-badge">Jupyter</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🏆 What Makes This Different</h2>
+                <p>✅ <strong>Real stakes:</strong> 101K messy hospital records, not synthetic data</p>
+                <p>✅ <strong>Enterprise standards:</strong> IBM-style documentation, reproducible notebooks</p>
+                <p>✅ <strong>Clinical awareness:</strong> Understands why accuracy fails on medical data</p>
+                <p>✅ <strong>Business alignment:</strong> Metrics tied to hospital reimbursement models</p>
+                <p>✅ <strong>Production mindset:</strong> Explainability, deployment planning, cost-sensitive design</p>
+            </div>
+            
+            <div class="cta">
+                <h2>💼 Why Recruiters Should Care</h2>
+                <p>This project proves I can walk into your healthcare analytics team on Day 1 and ship value.</p>
+                <p>Not another tutorial. Not another cleaned dataset. Real clinical ML that solves a $26B problem.</p>
+                <a href="#" class="cta-button">View Full Project on GitHub</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
