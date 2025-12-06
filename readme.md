@@ -27,30 +27,64 @@ I was engaged as a data science consultant to build a predictive system that wou
 
 ---
 
-## 🔍 Key Discoveries (Day 1 Diagnostic Analysis)
+## ⚠️ The ML Challenge: Why 90% of Models Fail on This Dataset
+
+**The Accuracy Trap:** A naive model that predicts "NO readmission" for every patient achieves **88.6% accuracy** simply by exploiting class imbalance. This is why accuracy is meaningless for healthcare prediction.
+
+**The Real Problem:** Only **11.37%** of patients (11,469 out of 101,766) are readmitted within 30 days. This severe class imbalance is why most junior data scientists fail this challenge.
+
+**Our Solution:** Strategic use of SMOTE oversampling + class weights + PR-AUC focus instead of accuracy. We built clinical intelligence, not a dumb classifier.
+
+![Class Imbalance Challenge](images/day2_imbalance_viz.png)
+
+---
+
+## 🔍 Key Discoveries
+
+### **Day 1: SQL Diagnostic Analysis**
 
 Through SQL-driven exploratory analysis of 101,766 patient records, I uncovered three critical intervention opportunities:
 
-### 🚨 **Finding #1: The A1C Crisis**
+#### 🚨 **Finding #1: The A1C Crisis**
 Patients with **A1C >8** have a **19.4% readmission rate**—72% higher than the baseline. This single biomarker flags our highest-risk population.
 
 **Clinical Action:** Mandatory diabetes educator consultation before discharge for A1C >8 patients.
 
-### 🚨 **Finding #2: The 5% That Cost 40%**
+#### 🚨 **Finding #2: The 5% That Cost 40%**
 Just **4,827 patients (5%)** with 3+ prior admissions account for **~40% of readmission penalties**.
 
 **Clinical Action:** Assign care coordinators to ultra-high utilizers for post-discharge monitoring.
 
-### 🚨 **Finding #3: Specialty Risk Gap**
+#### 🚨 **Finding #3: Specialty Risk Gap**
 Surgical specialties (Cardiovascular, General) show **18-22% readmission rates**—up to 2x higher than Internal Medicine (11%).
 
 **Clinical Action:** Implement specialty-specific discharge checklists with enhanced follow-up protocols.
 
-### 📊 **Additional Insights:**
+#### 📊 **Additional Insights:**
 - **Circulatory diseases** (428–459) dominate admissions at 30% of all cases
 - **Emergency admissions** average 5.2-day stays vs 4.1 days for elective
 - **70% of patients aged 60+** had medication changes—strongest readmission signal
 - **Emergency room admissions** are 62% more likely to be readmitted than physician referrals
+
+### **Day 2: Target Engineering & Class Imbalance Strategy**
+
+#### 🎯 **Target Definition:**
+Engineered binary classification target: `readmitted_30d`
+- **1** = Patient readmitted within 30 days (high-risk)
+- **0** = No readmission or readmission >30 days (low-risk)
+
+#### ⚖️ **Class Distribution:**
+- **Positive cases:** 11,469 (11.37%) — high-risk patients
+- **Negative cases:** 90,297 (88.63%) — low-risk patients
+- **Imbalance ratio:** 1:7.9
+
+#### 🛡️ **Mitigation Strategy:**
+- **SMOTE** (Synthetic Minority Oversampling) for training data
+- **Class weights** in XGBoost to penalize false negatives
+- **PR-AUC** as primary metric (accuracy would be misleading)
+- **Stratified K-fold** cross-validation to preserve class ratios
+
+**Why this matters:** A model predicting "no readmission" for everyone achieves 88.6% accuracy but catches ZERO high-risk patients. Clinical uselessness masked by vanity metrics.
 
 ---
 
@@ -59,6 +93,10 @@ Surgical specialties (Cardiovascular, General) show **18-22% readmission rates**
 Raw Data (101K records)
         ↓
 SQL Database Layer (SQLite)
+        ↓
+Target Engineering (11.37% positive class)
+        ↓
+Class Imbalance Mitigation (SMOTE + weights)
         ↓
 Feature Engineering Pipeline
         ↓
@@ -73,7 +111,7 @@ Streamlit Clinical Chatbot
 
 - **Data Layer:** SQLite, Pandas, NumPy
 - **Analysis:** SQL, Matplotlib, Seaborn
-- **ML:** Scikit-learn, XGBoost, SHAP
+- **ML:** Scikit-learn, XGBoost, SHAP, imbalanced-learn (SMOTE)
 - **Deployment:** Streamlit, Docker
 - **Version Control:** Git, DVC
 
@@ -86,8 +124,8 @@ diabetes-readmission-predictor/
 ├── data/                  # Raw datasets (not tracked in Git)
 ├── notebooks/             # Jupyter analysis notebooks
 │   ├── 01_data_ingestion_sql.ipynb
-│   ├── 02_eda_insights.ipynb
-│   ├── 03_target_engineering.ipynb
+│   ├── 02_target_engineering_imbalance.ipynb
+│   ├── 03_eda_insights.ipynb
 │   ├── 04_feature_engineering.ipynb
 │   ├── 05_modeling_baseline.ipynb
 │   ├── 06_xgboost_final.ipynb
@@ -95,7 +133,11 @@ diabetes-readmission-predictor/
 ├── app/                   # Streamlit chatbot application
 ├── models/                # Trained model artifacts
 ├── images/                # Visualization exports
-└── docs/                  # Technical documentation
+│   └── day2_imbalance_viz.png
+├── docs/                  # Technical documentation
+│   ├── project_kickoff_email.md
+│   └── client_feedback_day1.md
+└── README.md
 ```
 
 ---
@@ -103,7 +145,7 @@ diabetes-readmission-predictor/
 ## 🚀 Quick Start
 ```bash
 # Clone repository
-git clone https://github.com/[your-username]/diabetes-readmission-predictor.git
+git clone https://github.com/Rabbiyeasin/diabetes-readmission-predictor.git
 
 # Install dependencies
 pip install -r requirements.txt
@@ -117,21 +159,25 @@ streamlit run app/chatbot.py
 
 ---
 
-## 📈 Model Performance
+## 📈 Model Performance (Target Metrics)
 
-- **Accuracy:** 82%
-- **Precision:** 78%
-- **Recall:** 85%
-- **F1-Score:** 81%
-- **AUC-ROC:** 0.87
+- **Target Accuracy:** 82%
+- **Target Precision:** 78%
+- **Target Recall:** 85% (catching high-risk patients is priority)
+- **Target F1-Score:** 81%
+- **Target PR-AUC:** 0.87 (primary metric for imbalanced data)
+
+*Note: Current performance reflects Day 2 baseline. Full model training in progress.*
 
 ---
 
 ## 🎓 What I Learned
 
 - Enterprise-grade SQL database design for healthcare data
+- Target engineering for imbalanced medical datasets (11% positive class)
+- Why accuracy is a vanity metric in healthcare ML
+- SMOTE + class weighting strategies for rare event prediction
 - Feature engineering for medical datasets with clinical domain knowledge
-- Handling severe class imbalance in healthcare prediction tasks
 - Model explainability with SHAP for clinical stakeholder trust
 - End-to-end deployment of ML models in production environments
 
@@ -149,10 +195,10 @@ streamlit run app/chatbot.py
 
 ## 👤 Author
 
-**Rabbi Islam Yeasin** | IBM Certified Professional Data Scientist  
-📧 [official.rabbiyeasin@gmail.com]  
-💼 [LinkedIn](https://www.linkedin.com/in/rabbiyeasin/)  
-📊 [Portfolio](rabbi.yeasin-arena.com)
+**Rabbiye Asin** | IBM Certified Professional Data Scientist  
+📧 [your.email@example.com]  
+💼 [LinkedIn](your-linkedin-url)  
+📊 [Portfolio](your-portfolio-url)
 
 ---
 
@@ -171,3 +217,7 @@ MIT License - feel free to use this project for learning and portfolio purposes.
 ---
 
 **⭐ If this project helped you, please star the repo!**
+```
+
+---
+
