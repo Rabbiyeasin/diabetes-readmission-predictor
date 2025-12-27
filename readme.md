@@ -59,19 +59,19 @@ I was engaged as a data science consultant to build a predictive system that wou
 ```
 ┌─────────────────────────────────────────┐
 │   Tuned XGBoost (GridSearchCV)          │
-│   • max_depth: 6                         │
-│   • learning_rate: 0.05                  │
-│   • enable_categorical: True             │
-│   • Individual AUC: 0.70                 │
+│   • max_depth: 6                        │
+│   • learning_rate: 0.05                 │
+│   • enable_categorical: True            │
+│   • Individual AUC: 0.70                │
 └─────────────────────────────────────────┘
                     ↓
               Simple Average
                     ↓
 ┌─────────────────────────────────────────┐
 │   LightGBM (Gradient Boosting)          │
-│   • num_leaves: 31                       │
-│   • learning_rate: 0.05                  │
-│   • Individual AUC: 0.69                 │
+│   • num_leaves: 31                      │
+│   • learning_rate: 0.05                 │
+│   • Individual AUC: 0.69                │
 └─────────────────────────────────────────┘
                     ↓
         Final Prediction (0.71+ AUC)
