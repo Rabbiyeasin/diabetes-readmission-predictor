@@ -1,10 +1,9 @@
-pandas
-numpy
+joblib
+lightgbm
 matplotlib
-seaborn
+pandas
 scikit-learn
-xgboost
+seaborn
 shap
 streamlit
-sqlite3
-jupyter
+xgboost
