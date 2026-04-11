@@ -7,6 +7,7 @@ import pandas as pd
 import os
 
 # Load model — fixed path
+import os
 model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'final_ensemble.pkl')
 ensemble = joblib.load(model_path)
 xgb_model = ensemble['xgb']
